@@ -12,33 +12,33 @@ import { useState, useRef } from 'react'
 function TaskList({ tasks, onAddTask, onDeleteTask }) {
   // This is our controlled input state
   const [newTask, setNewTask] = useState('');
-
   // This is our uncontrolled input ref
-  // useRef creates a reference that persists across renders
   const uncontrolledInputRef = useRef(null);
+  // Add state for the search query
+  const [searchQuery, setSearchQuery] = useState('');
 
   // This function handles the controlled input submission
   const handleControlledSubmit = (e) => {
     e.preventDefault();
-    
-    // Call the onAddTask function that was passed as a prop
-    // This will update the state in the parent component
     onAddTask(newTask);
-    // Clear the input field after adding the task
     setNewTask('');
   };
 
   // This function handles the uncontrolled input submission
   const handleUncontrolledSubmit = (e) => {
     e.preventDefault();
-    // We access the input value directly from the ref
     const value = uncontrolledInputRef.current.value;
     if (value.trim() !== '') {
       onAddTask(value);
-      // Clear the input by setting its value directly
       uncontrolledInputRef.current.value = '';
     }
   };
+
+  // This is derived state - we compute visibleTasks based on tasks and searchQuery
+  // We don't need to store this in state because it's derived from other state
+  const visibleTasks = tasks.filter(task => 
+    task.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   // The return statement is where we define what this component will render
   // We can only return one root element (in this case, the outer <div>)
@@ -49,6 +49,23 @@ function TaskList({ tasks, onAddTask, onDeleteTask }) {
       {/* h1 is a heading element that will display "My Tasks" */}
       <h1>My Tasks</h1>
       
+      {/* Search Input */}
+      <div style={{ marginBottom: '20px' }}>
+        <h3>Search Tasks</h3>
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search tasks..."
+          style={{ width: '200px' }}
+        />
+        {/* Show how many tasks match the search */}
+        <p>
+          Showing {visibleTasks.length} of {tasks.length} tasks
+          {searchQuery && ` matching "${searchQuery}"`}
+        </p>
+      </div>
+
       {/* Controlled Input Form */}
       <div style={{ marginBottom: '20px' }}>
         <h3>Controlled Input (using useState)</h3>
@@ -80,17 +97,16 @@ function TaskList({ tasks, onAddTask, onDeleteTask }) {
         <p>Value is managed by the DOM</p>
       </div>
 
-      {/* 
-        Use conditional rendering to show different content
-        based on whether there are tasks or not
-      */}
-      {tasks.length === 0 ? (
-        // If there are no tasks, show this message
-        <p>No tasks yet! Add one above.</p>
+      {/* Task List - now using visibleTasks instead of tasks */}
+      {visibleTasks.length === 0 ? (
+        <p>
+          {tasks.length === 0 
+            ? "No tasks yet! Add one above." 
+            : "No tasks match your search."}
+        </p>
       ) : (
-        // If there are tasks, show the list
         <ul>
-          {tasks.map((task, index) => (
+          {visibleTasks.map((task, index) => (
             <Task 
               key={index} 
               title={task} 
