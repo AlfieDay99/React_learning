@@ -7,14 +7,11 @@ import Task from './Task'
 // Import useState from React - this is a hook that lets us add state to our component
 import { useState } from 'react'
 
-function TaskList() {
-  // useState is a React Hook that lets us add state to our component
-  // The first value (tasks) is our state variable
-  // The second value (setTasks) is a function to update our state
-  // The initial value is an array with two tasks
-  const [tasks, setTasks] = useState(['Learn React', 'Build a To-Do App']);
-  
-  // This state will hold the current value of our input field
+// TaskList now receives props from its parent component (App)
+// We use destructuring to get the specific props we need
+function TaskList({ tasks, onAddTask }) {
+  // We only need to manage the input field state here
+  // The tasks state is now managed by the parent component
   const [newTask, setNewTask] = useState('');
 
   // This function will be called when the form is submitted
@@ -22,15 +19,11 @@ function TaskList() {
     // Prevent the default form submission behavior
     e.preventDefault();
     
-    // Only add the task if it's not empty
-    if (newTask.trim() !== '') {
-      // Use the setTasks function to update our tasks array
-      // We use the spread operator (...) to keep all existing tasks
-      // and add our new task at the end
-      setTasks([...tasks, newTask]);
-      // Clear the input field after adding the task
-      setNewTask('');
-    }
+    // Call the onAddTask function that was passed as a prop
+    // This will update the state in the parent component
+    onAddTask(newTask);
+    // Clear the input field after adding the task
+    setNewTask('');
   };
 
   // The return statement is where we define what this component will render
@@ -61,11 +54,8 @@ function TaskList() {
       {/* This is our unordered list that will contain our tasks */}
       <ul>
         {/* 
-          We use the map function to create a Task component for each item in our tasks array
-          map is a JavaScript array method that lets us transform each item in an array
-          For each task in the array, we create a new Task component
-          The key prop is required by React when rendering lists - it helps React keep track of each item
-          We pass the task text as the title prop to our Task component
+          We still map over the tasks array, but now it comes from props
+          instead of local state
         */}
         {tasks.map((task, index) => (
           <Task key={index} title={task} />

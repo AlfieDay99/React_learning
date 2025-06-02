@@ -2,21 +2,34 @@
 // The './' means we're looking in the same directory as this file
 import './App.css'  // This imports our CSS styles
 import TaskList from './TaskList'  // This imports our TaskList component
+// Import useState from React to manage our tasks state
+import { useState } from 'react'
 
 // This is our main App component
 // In React, the App component is typically the root component of our application
 function App() {
+  // Move the tasks state up to the App component
+  // This is called "lifting state up" - we move state to a common ancestor
+  const [tasks, setTasks] = useState(['Learn React', 'Build a To-Do App']);
+
+  // This function will be passed down to TaskList to add new tasks
+  const addTask = (newTask) => {
+    // Only add the task if it's not empty
+    if (newTask.trim() !== '') {
+      setTasks([...tasks, newTask]);
+    }
+  };
+
   // The return statement defines what this component will render
   return (
     // className="App" is how we add CSS classes in React (instead of class="App" in HTML)
     // This div will be the container for our entire application
     <div className="App">
       {/* 
-        This is how we use our TaskList component
-        It looks like an HTML tag, but it's actually our custom component
-        The name must match exactly what we exported from TaskList.jsx
+        Pass the tasks array and addTask function as props to TaskList
+        This is how parent components communicate with child components
       */}
-      <TaskList />
+      <TaskList tasks={tasks} onAddTask={addTask} />
     </div>
   )
 }
