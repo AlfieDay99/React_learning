@@ -20,16 +20,27 @@ function App() {
     }
   };
 
+  // Add a new function to handle task deletion
+  const deleteTask = (indexToDelete) => {
+    // Use filter to create a new array without the deleted task
+    // filter keeps all items where the condition is true
+    setTasks(tasks.filter((_, index) => index !== indexToDelete));
+  };
+
   // The return statement defines what this component will render
   return (
     // className="App" is how we add CSS classes in React (instead of class="App" in HTML)
     // This div will be the container for our entire application
     <div className="App">
       {/* 
-        Pass the tasks array and addTask function as props to TaskList
+        Pass the tasks array, addTask function, and deleteTask function as props to TaskList
         This is how parent components communicate with child components
       */}
-      <TaskList tasks={tasks} onAddTask={addTask} />
+      <TaskList 
+        tasks={tasks} 
+        onAddTask={addTask} 
+        onDeleteTask={deleteTask}
+      />
     </div>
   )
 }

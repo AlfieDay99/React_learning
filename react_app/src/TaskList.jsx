@@ -9,7 +9,7 @@ import { useState } from 'react'
 
 // TaskList now receives props from its parent component (App)
 // We use destructuring to get the specific props we need
-function TaskList({ tasks, onAddTask }) {
+function TaskList({ tasks, onAddTask, onDeleteTask }) {
   // We only need to manage the input field state here
   // The tasks state is now managed by the parent component
   const [newTask, setNewTask] = useState('');
@@ -51,16 +51,26 @@ function TaskList({ tasks, onAddTask }) {
         <button type="submit">Add Task</button>
       </form>
 
-      {/* This is our unordered list that will contain our tasks */}
-      <ul>
-        {/* 
-          We still map over the tasks array, but now it comes from props
-          instead of local state
-        */}
-        {tasks.map((task, index) => (
-          <Task key={index} title={task} />
-        ))}
-      </ul>
+      {/* 
+        Use conditional rendering to show different content
+        based on whether there are tasks or not
+      */}
+      {tasks.length === 0 ? (
+        // If there are no tasks, show this message
+        <p>No tasks yet! Add one above.</p>
+      ) : (
+        // If there are tasks, show the list
+        <ul>
+          {tasks.map((task, index) => (
+            <Task 
+              key={index} 
+              title={task} 
+              // Pass a function that will call onDeleteTask with the correct index
+              onDelete={() => onDeleteTask(index)}
+            />
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
