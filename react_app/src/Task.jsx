@@ -1,47 +1,25 @@
 // This is a new component called Task
 // It's a smaller, reusable component that will display a single task
 // We now receive title, onDelete, completed status, and toggle completion function as props
+
+// Import the CSS file
+import './Task.css'
+
 function Task({ title, onDelete, completed, onToggleComplete }) {
   return (
-    <li 
-      // Use template literals to conditionally add the 'completed' class
-      className={`task-item ${completed ? 'completed' : ''}`}
-      // Add some basic inline styles that will be overridden by the completed class
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '10px',
-        marginBottom: '5px',
-        padding: '5px',
-        textDecoration: completed ? 'line-through' : 'none',
-        color: completed ? '#888' : 'inherit',
-        backgroundColor: completed ? '#f0f0f0' : 'transparent',
-        borderRadius: '4px',
-        transition: 'all 0.3s ease'
-      }}
-    >
-      {/* Add a checkbox to toggle completion status */}
+    <li className={`task-item ${completed ? 'completed' : ''}`}>
       <input
         type="checkbox"
         checked={completed}
         onChange={onToggleComplete}
-        style={{ marginRight: '10px' }}
+        className="task-checkbox"
       />
       
-      {/* Display the task title */}
-      <span style={{ flex: 1 }}>{title}</span>
+      <span className="task-title">{title}</span>
       
-      {/* Delete button */}
       <button 
         onClick={onDelete}
-        style={{
-          padding: '2px 8px',
-          backgroundColor: '#ff4444',
-          color: 'white',
-          border: 'none',
-          borderRadius: '4px',
-          cursor: 'pointer'
-        }}
+        className="task-delete-button"
       >
         Delete
       </button>

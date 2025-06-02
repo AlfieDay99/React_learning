@@ -6,6 +6,8 @@
 import Task from './Task'
 // Import useState and useRef from React
 import { useState, useRef } from 'react'
+// Import the CSS file
+import './TaskList.css'
 
 // TaskList now receives props from its parent component (App)
 // We use destructuring to get the specific props we need
@@ -44,20 +46,20 @@ function TaskList({ tasks, onAddTask, onDeleteTask, onToggleTask }) {
   // We can only return one root element (in this case, the outer <div>)
   return (
     // This div is our root element that wraps everything
-    <div>
+    <div className="task-list-container">
       {/* This is a JSX comment. It won't show up in the browser */}
       {/* h1 is a heading element that will display "My Tasks" */}
       <h1>My Tasks</h1>
       
       {/* Search Input */}
-      <div style={{ marginBottom: '20px' }}>
+      <div className="search-container">
         <h3>Search Tasks</h3>
         <input
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search tasks..."
-          style={{ width: '200px' }}
+          className="search-input"
         />
         {/* Show how many tasks match the search */}
         <p>
@@ -67,7 +69,7 @@ function TaskList({ tasks, onAddTask, onDeleteTask, onToggleTask }) {
       </div>
 
       {/* Controlled Input Form */}
-      <div style={{ marginBottom: '20px' }}>
+      <div className="form-container">
         <h3>Controlled Input (using useState)</h3>
         <form onSubmit={handleControlledSubmit}>
           <input
@@ -75,23 +77,25 @@ function TaskList({ tasks, onAddTask, onDeleteTask, onToggleTask }) {
             value={newTask}
             onChange={(e) => setNewTask(e.target.value)}
             placeholder="Add a task (controlled)"
+            className="task-input"
           />
-          <button type="submit">Add Task</button>
+          <button type="submit" className="task-button">Add Task</button>
         </form>
         {/* Show the current value of the controlled input */}
         <p>Current value: {newTask}</p>
       </div>
 
       {/* Uncontrolled Input Form */}
-      <div style={{ marginBottom: '20px' }}>
+      <div className="form-container">
         <h3>Uncontrolled Input (using useRef)</h3>
         <form onSubmit={handleUncontrolledSubmit}>
           <input
             type="text"
             ref={uncontrolledInputRef}
             placeholder="Add a task (uncontrolled)"
+            className="task-input"
           />
-          <button type="submit">Add Task</button>
+          <button type="submit" className="task-button">Add Task</button>
         </form>
         {/* We can't show the current value as easily with uncontrolled inputs */}
         <p>Value is managed by the DOM</p>
@@ -105,7 +109,7 @@ function TaskList({ tasks, onAddTask, onDeleteTask, onToggleTask }) {
             : "No tasks match your search."}
         </p>
       ) : (
-        <ul style={{ listStyle: 'none', padding: 0 }}>
+        <ul className="task-list">
           {visibleTasks.map((task, index) => (
             <Task 
               key={index} 
