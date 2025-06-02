@@ -8,15 +8,19 @@ import { useState } from 'react'
 // This is our main App component
 // In React, the App component is typically the root component of our application
 function App() {
-  // Move the tasks state up to the App component
-  // This is called "lifting state up" - we move state to a common ancestor
-  const [tasks, setTasks] = useState(['Learn React', 'Build a To-Do App']);
+  // Update the tasks state to include completion status
+  // Each task is now an object with title and completed properties
+  const [tasks, setTasks] = useState([
+    { title: 'Learn React', completed: false },
+    { title: 'Build a To-Do App', completed: false }
+  ]);
 
   // This function will be passed down to TaskList to add new tasks
   const addTask = (newTask) => {
     // Only add the task if it's not empty
     if (newTask.trim() !== '') {
-      setTasks([...tasks, newTask]);
+      // Add new task with completed set to false
+      setTasks([...tasks, { title: newTask, completed: false }]);
     }
   };
 
@@ -25,6 +29,15 @@ function App() {
     // Use filter to create a new array without the deleted task
     // filter keeps all items where the condition is true
     setTasks(tasks.filter((_, index) => index !== indexToDelete));
+  };
+
+  // Add function to toggle task completion
+  const toggleTaskCompletion = (index) => {
+    setTasks(tasks.map((task, i) => 
+      i === index 
+        ? { ...task, completed: !task.completed }
+        : task
+    ));
   };
 
   // The return statement defines what this component will render
@@ -40,6 +53,7 @@ function App() {
         tasks={tasks} 
         onAddTask={addTask} 
         onDeleteTask={deleteTask}
+        onToggleTask={toggleTaskCompletion}
       />
     </div>
   )

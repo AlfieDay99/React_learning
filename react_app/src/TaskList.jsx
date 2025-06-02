@@ -9,7 +9,7 @@ import { useState, useRef } from 'react'
 
 // TaskList now receives props from its parent component (App)
 // We use destructuring to get the specific props we need
-function TaskList({ tasks, onAddTask, onDeleteTask }) {
+function TaskList({ tasks, onAddTask, onDeleteTask, onToggleTask }) {
   // This is our controlled input state
   const [newTask, setNewTask] = useState('');
   // This is our uncontrolled input ref
@@ -37,7 +37,7 @@ function TaskList({ tasks, onAddTask, onDeleteTask }) {
   // This is derived state - we compute visibleTasks based on tasks and searchQuery
   // We don't need to store this in state because it's derived from other state
   const visibleTasks = tasks.filter(task => 
-    task.toLowerCase().includes(searchQuery.toLowerCase())
+    task.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   // The return statement is where we define what this component will render
@@ -105,13 +105,14 @@ function TaskList({ tasks, onAddTask, onDeleteTask }) {
             : "No tasks match your search."}
         </p>
       ) : (
-        <ul>
+        <ul style={{ listStyle: 'none', padding: 0 }}>
           {visibleTasks.map((task, index) => (
             <Task 
               key={index} 
-              title={task} 
-              // Pass a function that will call onDeleteTask with the correct index
+              title={task.title}
+              completed={task.completed}
               onDelete={() => onDeleteTask(index)}
+              onToggleComplete={() => onToggleTask(index)}
             />
           ))}
         </ul>
