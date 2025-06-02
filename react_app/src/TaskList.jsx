@@ -4,19 +4,21 @@
 
 // Import the Task component so we can use it
 import Task from './Task'
-// Import useState from React - this is a hook that lets us add state to our component
-import { useState } from 'react'
+// Import useState and useRef from React
+import { useState, useRef } from 'react'
 
 // TaskList now receives props from its parent component (App)
 // We use destructuring to get the specific props we need
 function TaskList({ tasks, onAddTask, onDeleteTask }) {
-  // We only need to manage the input field state here
-  // The tasks state is now managed by the parent component
+  // This is our controlled input state
   const [newTask, setNewTask] = useState('');
 
-  // This function will be called when the form is submitted
-  const handleSubmit = (e) => {
-    // Prevent the default form submission behavior
+  // This is our uncontrolled input ref
+  // useRef creates a reference that persists across renders
+  const uncontrolledInputRef = useRef(null);
+
+  // This function handles the controlled input submission
+  const handleControlledSubmit = (e) => {
     e.preventDefault();
     
     // Call the onAddTask function that was passed as a prop
@@ -24,6 +26,18 @@ function TaskList({ tasks, onAddTask, onDeleteTask }) {
     onAddTask(newTask);
     // Clear the input field after adding the task
     setNewTask('');
+  };
+
+  // This function handles the uncontrolled input submission
+  const handleUncontrolledSubmit = (e) => {
+    e.preventDefault();
+    // We access the input value directly from the ref
+    const value = uncontrolledInputRef.current.value;
+    if (value.trim() !== '') {
+      onAddTask(value);
+      // Clear the input by setting its value directly
+      uncontrolledInputRef.current.value = '';
+    }
   };
 
   // The return statement is where we define what this component will render
@@ -35,21 +49,36 @@ function TaskList({ tasks, onAddTask, onDeleteTask }) {
       {/* h1 is a heading element that will display "My Tasks" */}
       <h1>My Tasks</h1>
       
-      {/* This is our form for adding new tasks */}
-      <form onSubmit={handleSubmit}>
-        {/* 
-          This input field is controlled by our newTask state
-          When the user types, the onChange event updates our state
-          The value is always what's in our state
-        */}
-        <input
-          type="text"
-          value={newTask}
-          onChange={(e) => setNewTask(e.target.value)}
-          placeholder="Add a new task"
-        />
-        <button type="submit">Add Task</button>
-      </form>
+      {/* Controlled Input Form */}
+      <div style={{ marginBottom: '20px' }}>
+        <h3>Controlled Input (using useState)</h3>
+        <form onSubmit={handleControlledSubmit}>
+          <input
+            type="text"
+            value={newTask}
+            onChange={(e) => setNewTask(e.target.value)}
+            placeholder="Add a task (controlled)"
+          />
+          <button type="submit">Add Task</button>
+        </form>
+        {/* Show the current value of the controlled input */}
+        <p>Current value: {newTask}</p>
+      </div>
+
+      {/* Uncontrolled Input Form */}
+      <div style={{ marginBottom: '20px' }}>
+        <h3>Uncontrolled Input (using useRef)</h3>
+        <form onSubmit={handleUncontrolledSubmit}>
+          <input
+            type="text"
+            ref={uncontrolledInputRef}
+            placeholder="Add a task (uncontrolled)"
+          />
+          <button type="submit">Add Task</button>
+        </form>
+        {/* We can't show the current value as easily with uncontrolled inputs */}
+        <p>Value is managed by the DOM</p>
+      </div>
 
       {/* 
         Use conditional rendering to show different content
